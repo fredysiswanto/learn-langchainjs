@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatbot</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        background: radial-gradient(circle at top, #0f172a, #020617);
+        color: #e5e7eb;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 16px;
+      }
+
+      .app {
+        width: 100%;
+        max-width: 960px;
+        background: rgba(15, 23, 42, 0.9);
+        border-radius: 16px;
+        border: 1px solid rgba(148, 163, 184, 0.3);
+        box-shadow: 0 24px 80px rgba(15, 23, 42, 0.8);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .header {
+        padding: 16px 20px;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        background: linear-gradient(to right, rgba(15, 23, 42, 0.9), rgba(30, 64, 175, 0.6));
+      }
+
+      .header-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo {
+        width: 32px;
+        height: 32px;
+        border-radius: 999px;
+        background: radial-gradient(circle at 30% 0, #38bdf8, #4f46e5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 18px;
+        box-shadow: 0 0 0 1px rgba(15, 23, 42, 0.6), 0 18px 45px rgba(15, 23, 42, 0.9);
+      }
+
+      .title {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .title h1 {
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .title span {
+        font-size: 12px;
+        color: #cbd5f5;
+      }
+
+      .status-pill {
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 999px;
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(148, 163, 184, 0.5);
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #e5e7eb;
+      }
+
+      .status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 999px;
+        background: #22c55e;
+        box-shadow: 0 0 0 4px rgba(34, 197, 94, 0.25);
+      }
+
+      .main {
+        display: grid;
+        grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+        gap: 0;
+        min-height: 480px;
+      }
+
+      .chat-panel {
+        display: flex;
+        flex-direction: column;
+        border-right: 1px solid rgba(30, 64, 175, 0.4);
+        background: radial-gradient(circle at top left, rgba(30, 64, 175, 0.3), transparent);
+      }
+
+      .sidebar {
+        display: none;
+        flex-direction: column;
+        padding: 16px 16px 20px;
+        background: radial-gradient(circle at top right, rgba(56, 189, 248, 0.16), rgba(15, 23, 42, 0.9));
+      }
+
+      @media (min-width: 900px) {
+        .sidebar {
+          display: flex;
+        }
+      }
+
+      .messages {
+        flex: 1;
+        padding: 16px 16px 20px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      /* Bubble style yang dipakai oleh index.ts */
+      .speech {
+        max-width: 80%;
+        padding: 10px 13px;
+        border-radius: 12px;
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 8px;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+
+      .speech-human {
+        margin-left: auto;
+        background: linear-gradient(to right, #4f46e5, #06b6d4);
+        color: #ffffff;
+        border-bottom-right-radius: 2px;
+      }
+
+      .speech-ai {
+        margin-right: auto;
+        background: rgba(15, 23, 42, 0.9);
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        border-bottom-left-radius: 2px;
+      }
+
+      .input-area {
+        padding: 10px 12px 14px;
+        border-top: 1px solid rgba(30, 64, 175, 0.4);
+        background: linear-gradient(to top, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.95));
+      }
+
+      .input-wrapper {
+        display: flex;
+        align-items: flex-end;
+        gap: 8px;
+        padding: 8px 10px 8px 12px;
+        background: rgba(15, 23, 42, 0.95);
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.5);
+      }
+
+      .input-wrapper:focus-within {
+        border-color: #38bdf8;
+        box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.7);
+      }
+
+      textarea {
+        flex: 1;
+        resize: none;
+        border: none;
+        outline: none;
+        background: transparent;
+        color: #e5e7eb;
+        font: inherit;
+        font-size: 14px;
+        max-height: 120px;
+      }
+
+      textarea::placeholder {
+        color: #6b7280;
+      }
+
+      button {
+        border: none;
+        outline: none;
+        cursor: pointer;
+        border-radius: 999px;
+        padding: 8px 14px;
+        font-size: 13px;
+        font-weight: 500;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: linear-gradient(to right, #4f46e5, #06b6d4);
+        color: white;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.9);
+        transition: transform 0.07s ease, box-shadow 0.07s ease, opacity 0.1s ease;
+        white-space: nowrap;
+      }
+
+      button:disabled {
+        opacity: 0.5;
+        cursor: default;
+        box-shadow: none;
+      }
+
+      button:not(:disabled):active {
+        transform: translateY(1px) scale(0.99);
+        box-shadow: 0 4px 15px rgba(15, 23, 42, 0.9);
+      }
+
+      .shortcut-hint {
+        font-size: 11px;
+        color: #6b7280;
+        margin-top: 4px;
+        padding-left: 4px;
+      }
+
+      .pill-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 12px;
+        font-size: 11px;
+      }
+
+      .pill {
+        padding: 4px 9px;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.4);
+        color: #9ca3af;
+      }
+
+      .sidebar h2 {
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 4px;
+      }
+
+      .sidebar p {
+        font-size: 12px;
+        color: #9ca3af;
+        margin-bottom: 12px;
+      }
+
+      .suggestions {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 4px;
+        margin-bottom: 16px;
+      }
+
+      .suggestion-btn {
+        width: 100%;
+        justify-content: space-between;
+        padding: 7px 9px;
+        font-size: 12px;
+        border-radius: 9px;
+        background: rgba(15, 23, 42, 0.9);
+        border: 1px solid rgba(148, 163, 184, 0.35);
+        color: #e5e7eb;
+        box-shadow: none;
+      }
+
+      .suggestion-btn span {
+        font-size: 11px;
+        color: #9ca3af;
+      }
+
+      .suggestion-btn:hover:not(:disabled) {
+        border-color: rgba(56, 189, 248, 0.8);
+      }
+
+      .note {
+        font-size: 11px;
+        color: #6b7280;
+        margin-top: auto;
+        border-top: 1px solid rgba(30, 64, 175, 0.4);
+        padding-top: 10px;
+      }
+
+      .badge {
+        font-size: 10px;
+        padding: 2px 6px;
+        border-radius: 999px;
+        border: 1px solid rgba(148, 163, 184, 0.5);
+        color: #9ca3af;
+      }
+
+      .typing {
+        display: inline-flex;
+        gap: 3px;
+        align-items: center;
+      }
+
+      .dot {
+        width: 4px;
+        height: 4px;
+        border-radius: 999px;
+        background: #9ca3af;
+        animation: blink 1.2s infinite;
+      }
+
+      .dot:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .dot:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes blink {
+        0%, 60%, 100% {
+          opacity: 0.3;
+        }
+        30% {
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .main {
+          grid-template-columns: minmax(0, 1fr);
+        }
+
+        .chat-panel {
+          border-right: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header class="header">
+        <div class="header-left">
+          <div class="logo">AI</div>
+          <div class="title">
+            <h1>Chatbot</h1>
+            <span>Antarmuka percakapan sederhana untuk eksperimen RAG / LangChain</span>
+          </div>
+        </div>
+        <div class="status-pill" id="status-pill">
+          <span class="status-dot" id="status-dot"></span>
+          <span id="status-text">Siap digunakan</span>
+        </div>
+      </header>
+
+      <main class="main">
+        <section class="chat-panel">
+          <div class="messages" id="chatbot-conversation-container"></div>
+          <div class="input-area">
+            <div class="pill-row">
+              <div class="pill">Enter: Kirim pesan</div>
+              <div class="pill">Shift + Enter: Baris baru</div>
+            </div>
+            <form class="input-wrapper">
+              <textarea
+                id="user-input"
+                rows="1"
+                placeholder="Tanyakan apa saja tentang data Anda..."
+              ></textarea>
+              <button id="send-btn" type="submit">Kirim</button>
+            </form>
+            <div class="shortcut-hint">Pastikan server backend Anda sudah berjalan (contoh: http://localhost:3000).</div>
+          </div>
+        </section>
+
+        <aside class="sidebar">
+          <div>
+            <h2>Contoh pertanyaan</h2>
+            <p>Klik salah satu contoh di bawah untuk mengisi input.</p>
+            <div class="suggestions">
+              <button class="suggestion-btn" data-text="Ringkas isi dokumen yang ada di basis pengetahuan.">
+                Ringkas dokumen
+                <span>AI akan memberikan ringkasan singkat</span>
+              </button>
+              <button class="suggestion-btn" data-text="Apa 3 poin penting yang perlu saya ingat dari dokumen tersebut?">
+                Poin penting
+                <span>Cocok untuk membuat catatan belajar</span>
+              </button>
+              <button class="suggestion-btn" data-text="Buatkan saya daftar pertanyaan latihan berdasarkan materi dalam dokumen.">
+                Pertanyaan latihan
+                <span>Gunakan untuk latihan sebelum ujian</span>
+              </button>
+              <button class="suggestion-btn" data-text="Berikan penjelasan langkah demi langkah untuk konsep utama di dokumen.">
+                Penjelasan bertahap
+                <span>Jelaskan konsep secara pelan-pelan</span>
+              </button>
+            </div>
+          </div>
+          <div class="note">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span>Mode</span>
+              <span class="badge">Frontend only</span>
+            </div>
+            <p>
+              Halaman ini hanya UI. Hubungkan ke API Anda sendiri dengan mengubah konfigurasi endpoint di bagian JavaScript.
+            </p>
+          </div>
+        </aside>
+      </main>
+    </div>
+    <!-- Bundle hasil build TypeScript (src/index.ts -> dist/index.js) -->
+    <script type="module" src="./../dist/index.js"></script>
+  </body>
+</html>
