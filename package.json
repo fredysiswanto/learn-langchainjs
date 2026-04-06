@@ -5,9 +5,9 @@
   "main": "dist/backend/server.js",
   "type": "module",
   "scripts": {
-    "dev": "tsx -- src/backend/server.ts",
+    "dev": "tsx src/index-dev.ts",
     "build": "tsc && mkdir -p dist/frontend && cp src/frontend/index.html dist/frontend/index.html",
-    "start": "node dist/backend/server.js",
+    "start": "node -r dotenv/config dist/backend/server.js",
     "test": ""
   },
   "keywords": [],
