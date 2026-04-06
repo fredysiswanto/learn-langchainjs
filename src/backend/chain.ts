@@ -2,21 +2,14 @@ import dotenv from "dotenv";
 import { ChatOllama } from "@langchain/ollama";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
-import { retriever } from "./retriver.js";
-import { combinenDocuments } from "./combine-docs.js";
-import { type context } from "langchain";
+import { retriever } from "./retriever.js";
+import { combinenDocuments } from "./utils.js";
 import {
   RunnablePassthrough,
   RunnableSequence,
 } from "@langchain/core/runnables";
 
 dotenv.config();
-
-document.addEventListener("submit", (event) => {
-  event.preventDefault();
-  console.log("submit event triggered");
-  progressConversation();
-});
 
 const ollama = new ChatOllama({
   baseUrl: `${process.env.OLLAMA_BASE_URL}` || "http://192.168.1.100:11434",
@@ -49,7 +42,7 @@ const retrieverChain = RunnableSequence.from([
 
 const answerChain = answerPrompt.pipe(ollama).pipe(new StringOutputParser());
 
-const chain = RunnableSequence.from([
+export const chain = RunnableSequence.from([
   {
     standaloneQuestion: standaloneQuestionChain,
     original_input: new RunnablePassthrough(),
@@ -60,33 +53,3 @@ const chain = RunnableSequence.from([
   },
   answerChain,
 ]);
-
-// const response = await chain.invoke({
-//   question: "apakah pisang bisa ditambahkan ke nasi goreng?",
-// });
-
-async function progressConversation() {
-  console.log("panggil progress conversation");
-  const userInput = document.getElementById("user-input") as HTMLInputElement;
-  const chatbotConversation = document.getElementById(
-    "chatbot-conversation-container",
-  ) as HTMLDivElement;
-  const question = userInput.value;
-  userInput.value = "";
-
-  // add human message
-  const newHumanSpeechBubble = document.createElement("div");
-  newHumanSpeechBubble.classList.add("speech", "speech-human");
-  chatbotConversation.appendChild(newHumanSpeechBubble);
-  newHumanSpeechBubble.textContent = question;
-  chatbotConversation.scrollTop = chatbotConversation.scrollHeight;
-
-  const response = await chain.invoke({ question });
-
-  // add bot massage
-  const newAiSpeechBubble = document.createElement("div");
-  newAiSpeechBubble.classList.add("speech", "speech-ai");
-  chatbotConversation.appendChild(newAiSpeechBubble);
-  newAiSpeechBubble.textContent = "response: " + response;
-  chatbotConversation.scrollTop = chatbotConversation.scrollHeight;
-}
