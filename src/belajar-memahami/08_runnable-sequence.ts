@@ -61,8 +61,6 @@ import { RunnableSequence } from "@langchain/core/runnables";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 import { StringOutputParser } from "@langchain/core/output_parsers";
 
-import { Ollama } from "ollama";
-
 // 1. Define your components
 const prompt = ChatPromptTemplate.fromTemplate(
   "Tell me a short joke about {topic}",
