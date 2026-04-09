@@ -14,7 +14,7 @@ dotenv.config();
 const ollama = new ChatOllama({
   baseUrl: `${process.env.OLLAMA_BASE_URL}` || "http://192.168.1.100:11434",
   model: `${process.env.MODEL_NAME}` || "lfm2.5-thinking:1.2b",
-  temperature: 0.5,
+  temperature: 0,
 });
 
 const standaloneQuestionTemplate =
