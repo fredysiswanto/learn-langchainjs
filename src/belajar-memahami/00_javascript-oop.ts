@@ -31,6 +31,27 @@ Yang harus dihindari dalam OOP:
 3. Tidak memanfaatkan pewarisan dengan baik: Jangan membuat kelas yang terlalu spesifik atau tidak fleksibel, karena ini dapat mengurangi kemampuan untuk menggunakan kembali kode dan membuat hierarki kelas yang rumit.
 4. Tidak memanfaatkan polimorfisme: Jangan menulis kode yang bergantung pada tipe objek tertentu, karena ini dapat membuat kode kurang fleksibel dan sulit untuk diperluas di masa depan.
 
+membuat class tanpa class
+function Person(name, age) {
+  this.name = name;
+  this.age = age;
+}
+
+Person.prototype.greet = function() {
+  return `Hello, my name is ${this.name} and I am ${this.age} years old.`;
+};
+
+const person2 = new Person("Bob", 25);
+console.log(person2.greet()); // Output: Hello, my name is Bob and I am 25 years old.
+
+perbedaan antara class dan function constructor dalam JavaScript:
+- Class: Adalah sintaks yang lebih baru dan lebih mudah dibaca, digunakan untuk membuat objek dengan cara yang lebih terstruktur.
+- Function Constructor: Adalah cara lama untuk membuat objek dalam JavaScript, menggunakan fungsi sebagai constructor dan menambahkan metode ke prototype.
+
+kapan menggunakan class atau function constructor:
+- Gunakan class ketika Anda ingin menulis kode yang lebih modern, lebih mudah dibaca, dan lebih terstruktur. Class juga menyediakan fitur tambahan seperti inheritance yang lebih mudah digunakan.
+- Gunakan function constructor jika Anda bekerja dengan kode yang sudah ada yang menggunakan pola ini, atau jika Anda ingin mendukung lingkungan yang tidak mendukung sintaks class (meskipun ini semakin jarang terjadi).
+
 Challenge:
 1. Buatlah kelas "Car" dengan properti "make", "model", dan "year". Tambahkan metode "getCarInfo" yang mengembalikan string dengan informasi mobil tersebut.
 2. Buatlah kelas "ElectricCar" yang mewarisi dari kelas "Car" dan tambahkan properti tambahan "batteryCapacity". Override metode "getCarInfo" untuk menyertakan informasi tentang kapasitas baterai.
@@ -185,3 +206,19 @@ const rectangle1 = new Rectangle(4, 6);
 
 console.log(`Area of Circle: ${circle1.area()}`); // Output: Area of Circle: 78.53981633974483
 console.log(`Area of Rectangle: ${rectangle1.area()}`); // Output: Area of Rectangle: 24
+
+// mari kita coba implemntasi class untuk project kita, contoh membuat class untuk LLM (Language Model) yang akan kita gunakan dalam project kita, misalnya kita ingin membuat class untuk ChatOllama
+class ChatOllama {
+  modelName: string;
+  temperature: number;
+
+  constructor(modelName: string, temperature: number = 0.7) {
+    this.modelName = modelName;
+    this.temperature = temperature;
+  }
+
+  generateResponse(prompt: string): string {
+    // Simulasi respons dari model
+    return `Response from ${this.modelName} for prompt: "${prompt}"`;
+  }
+}

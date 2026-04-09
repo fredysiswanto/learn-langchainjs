@@ -26,7 +26,7 @@ const llmOutput = '{"name": "Alice", "age": 30}';
 //   console.error("Error parsing output:", error);
 // }
 
-// Contoh lain, jika output dari LLM tidak valid JSON
+// Contoh lain, jika output dari LLM tidak valid JSONß
 const invalidOutput = "This is not a JSON string";
 
 // try {
