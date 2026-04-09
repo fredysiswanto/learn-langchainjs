@@ -20,38 +20,42 @@ const ollama = new ChatOllama({
   model: `${process.env.MODEL_NAME}`,
   temperature: 0.5,
 });
-const question =
-  "buatkan menu makan siang santai di rumah berbeda dengan makan siang untuk rapat kantor atau pesta ulang tahun";
-const standaloneQuestionTemplate =
-  "Given a question, convert it to a standalone question. question: {question}";
+// const question =
+//   "buatkan menu makan siang santai di rumah berbeda dengan makan siang untuk rapat kantor atau pesta ulang tahun";
+// const standaloneQuestionTemplate =
+//   "Given a question, convert it to a standalone question. question: {question}";
 
-const standaloneQuestionPrompt = PromptTemplate.fromTemplate(
-  standaloneQuestionTemplate,
-);
+// const standaloneQuestionPrompt = PromptTemplate.fromTemplate(
+//   standaloneQuestionTemplate,
+// );
 
-const standaloneQuestionChain = standaloneQuestionPrompt.pipe(ollama);
-// console.log(standaloneQuestionChain);
-const response = await standaloneQuestionChain.invoke({
-  question: question,
-});
+// const standaloneQuestionChain = standaloneQuestionPrompt.pipe(ollama);
+// // console.log(standaloneQuestionChain);
+// const response = await standaloneQuestionChain.invoke({
+//   question: question,
+// });
 
-console.log("Response:", response.content);
+// console.log(
+//   "Response:\n",
+//   `Response Content :${response.content}\n`,
+//   `Original Question :${question}\n`,
+// );
 
-// const jenisMakanan = "sarapan";
-// const foodName = "nasi goreng";
-// const diet = "tinggi protein, rendah karbohidrat";
-// const bahanDihindari = "gula tambahan atau gorengan";
+const jenisMakanan = "sarapan";
+const foodName = "nasi goreng";
+const diet = "tinggi protein, rendah karbohidrat";
+const bahanDihindari = "gula tambahan atau gorengan";
 
-// // template prompt untuk resep makanan
-// const templateMenu = `Gunakan Bahasa English.
-// Buatkan resep {foodName} untuk ${jenisMakanan} yang ${diet}. Hindari penggunaan ${bahanDihindari}. Pastikan langkah-langkahnya jelas untuk pemula.`;
-// // const templat2 = `Buatkan resep {foodName} untuk sarapan yang tinggi protein, rendah karbohidrat. Hindari penggunaan gula tambahan atau gorengan. Pastikan langkah-langkahnya jelas untuk pemula.`;
+// template prompt untuk resep makanan
+const templateMenu = `Gunakan Bahasa English.
+Buatkan resep {foodName} untuk ${jenisMakanan} yang ${diet}. Hindari penggunaan ${bahanDihindari}. Pastikan langkah-langkahnya jelas untuk pemula.`;
+// const templat2 = `Buatkan resep {foodName} untuk sarapan yang tinggi protein, rendah karbohidrat. Hindari penggunaan gula tambahan atau gorengan. Pastikan langkah-langkahnya jelas untuk pemula.`;
 
-// // a string template yang bisa diisi dengan variabel
-// const menuPrompt = PromptTemplate.fromTemplate(templateMenu);
+// a string template yang bisa diisi dengan variabel
+const menuPrompt = PromptTemplate.fromTemplate(templateMenu);
 
-// const menuChain = menuPrompt.pipe(ollama);
+const menuChain = menuPrompt.pipe(ollama);
 
-// const response = await menuChain.invoke({ foodName });
-// console.log("Prompt yang dikirim ke Ollama:", menuChain);
-// console.log("Response dari Ollama:", response.content);
+const response = await menuChain.invoke({ foodName });
+console.log("Prompt yang dikirim ke Ollama:", menuChain);
+console.log("Response dari Ollama:", response.content);

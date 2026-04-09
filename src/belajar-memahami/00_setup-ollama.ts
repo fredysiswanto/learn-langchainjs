@@ -55,7 +55,13 @@ try {
   // Latihan mengirim prompt sederhana ke Ollama
   const response = await llm.chat({
     model: `${process.env.MODEL_NAME}`,
-    messages: [{ role: "user", content: "What is the capital of Indonesia?" }],
+    messages: [
+      { role: "assistant", content: "What is the capital of Indonesia?" },
+    ],
+    think: true, // opsi untuk melihat proses berpikir model
+    options: {
+      temperature: 0,
+    },
   });
   console.log("Response:", response.message.content);
 } catch (error) {
